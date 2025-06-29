@@ -15,7 +15,7 @@ export const msalConfig = {
     auth: {
         clientId: '24db0ab8-52ec-490f-b78e-1744f8f9c273', // This is the ONLY mandatory field that you need to supply.
         authority: 'https://ThresholdAlert.ciamlogin.com/', // Replace the placeholder with your tenant subdomain 
-        redirectUri: ' http://localhost:5173/redirect', // Points to window.location.origin. You must register this URI on Microsoft Entra admin center/App Registration.
+        redirectUri: import.meta.env.VITE_ThresholdAlertClient_redirectUri, // Points to window.location.origin. You must register this URI on Microsoft Entra admin center/App Registration.
         postLogoutRedirectUri: '/', // Indicates the page to navigate after logout.
         navigateToLoginRequestUrl: false, // If "true", will navigate back to the original request location before processing the auth code response.
     },
