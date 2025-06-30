@@ -6,6 +6,14 @@ import { loginRequest } from './authConfig';
 
 import './styles/App.css';
 
+import MeasurementList from './components/MeasurementList'; // Adjust the path if necessary
+import MySubscriptions from './components/MySubscriptions';
+import AlertServiceStatus from './components/AlertServiceStatus';
+
+import { useState } from 'react';
+import Readings from './components/Readings';
+
+
 /**
  * Most applications will need to conditionally render certain components based on whether a user is signed in or not. 
  * msal-react provides 2 easy ways to do this. AuthenticatedTemplate and UnauthenticatedTemplate components will 
@@ -56,10 +64,31 @@ const MainContent = () => {
  * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-react/docs/getting-started.md
  */
 const App = ({ instance }) => {
+
+    const [reloadSubscriptions, setReloadSubscriptions] = useState(false);
+
+    const handleReloadSubscriptions = () => {
+        setReloadSubscriptions((prev) => !prev); // Toggle state to trigger re-render
+    };
+
     return (
         <MsalProvider instance={instance}>
             <PageLayout>
-                <MainContent />
+                <AuthenticatedTemplate>
+            <AlertServiceStatus />
+            <MeasurementList onSubscriptionAdded={handleReloadSubscriptions} />
+            <Readings />
+            <MySubscriptions key={reloadSubscriptions} />
+          </AuthenticatedTemplate>
+          
+          <UnauthenticatedTemplate>
+            <AlertServiceStatus />
+            <MeasurementList />
+            <Readings />
+            <h6 style={{ textAlign: 'center', marginTop: '1em' }}>
+                Please sign-in to see your subscriptions.
+            </h6>
+          </UnauthenticatedTemplate>
             </PageLayout>
         </MsalProvider>
     );

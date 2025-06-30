@@ -13,7 +13,7 @@ export const PageLayout = (props) => {
             <NavigationBar />
             <br />
             <h5>
-                <center>Welcome to the Microsoft Authentication Library For React Tutorial</center>
+                <center>Welcome to ThresholdAlert</center>
             </h5>
             <br />
             {props.children}
