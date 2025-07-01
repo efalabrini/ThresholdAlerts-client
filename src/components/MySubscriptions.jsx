@@ -22,7 +22,7 @@ const MySubscriptions = () => {
         });
         const accessToken = response.accessToken;
 
-        const apiUrl = process.env.REACT_APP_API_URL  + 'api/User/me/subscriptions';
+        const apiUrl = import.meta.env.VITE_API_URL  + 'api/User/me/subscriptions';
 
         try {
           const response = await fetch(apiUrl, {
@@ -67,7 +67,7 @@ const MySubscriptions = () => {
         });
         const accessToken = response.accessToken;
 
-        const apiUrl = process.env.REACT_APP_API_URL  +  `api/User/me/subscription?measurementId=${measurementId}`;
+        const apiUrl = import.meta.env.VITE_API_URL   +  `api/User/me/subscription?measurementId=${measurementId}`;
 
       try {
         const response = await fetch(

@@ -22,7 +22,7 @@ export const NavigationBar = () => {
         <>
             <Navbar bg="primary" variant="dark" className="navbarStyle">
                 <a className="navbar-brand" href="/">
-                    Threshold Alert
+                    Wellcome to ThresholdAlert
                 </a>
                 <AuthenticatedTemplate>
                     <div className="collapse navbar-collapse justify-content-end">

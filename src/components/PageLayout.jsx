@@ -11,24 +11,18 @@ export const PageLayout = (props) => {
     return (
         <>
             <NavigationBar />
-            <br />
-            <h5>
-                <center>Welcome to ThresholdAlert</center>
-            </h5>
-            <br />
             {props.children}
             <br />
             <AuthenticatedTemplate>
                 <footer>
                     <center>
-                        How did we do?
                         <a
-                            href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR_ivMYEeUKlEq8CxnMPgdNZUNDlUTTk2NVNYQkZSSjdaTk5KT1o4V1VVNS4u"
+                            href="https://github.com/efalabrini/ThresholdAlerts-client"
                             rel="noopener noreferrer"
                             target="_blank"
                         >
                             {' '}
-                            Share your experience!
+                            Check it out on GitHub!
                         </a>
                     </center>
                 </footer>

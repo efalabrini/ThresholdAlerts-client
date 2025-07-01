@@ -75,7 +75,7 @@ const MeasurementList = ({ onSubscriptionAdded }) => {
             account: account
         })
       const accessToken = responselog.accessToken;
-      const apiUrl = process.env.REACT_APP_API_URL  + `api/User/me/subscription?measurementId=${currentId}`;
+      const apiUrl = import.meta.env.VITE_API_URL   + `api/User/me/subscription?measurementId=${currentId}`;
       const response = await fetch(
         apiUrl,
         {
@@ -127,7 +127,7 @@ const MeasurementList = ({ onSubscriptionAdded }) => {
                 <a href={entity.apiUrl} target="_blank" rel="noopener noreferrer">{entity.apiUrl}</a>
               </td>
               <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
-                <button onClick={() => handleAddSubscription(entity.id)}>Add</button>
+                <button onClick={() => handleAddSubscription(entity.id)}>Upsert</button>
               </td>
             </tr>
           ))}

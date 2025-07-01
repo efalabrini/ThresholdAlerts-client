@@ -74,7 +74,7 @@ const App = ({ instance }) => {
     return (
         <MsalProvider instance={instance}>
             <PageLayout>
-                <AuthenticatedTemplate>
+          <AuthenticatedTemplate>
             <AlertServiceStatus />
             <MeasurementList onSubscriptionAdded={handleReloadSubscriptions} />
             <Readings />
