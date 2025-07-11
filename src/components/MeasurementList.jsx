@@ -127,7 +127,7 @@ const MeasurementList = ({ onSubscriptionAdded }) => {
                 <a href={entity.apiUrl} target="_blank" rel="noopener noreferrer">{entity.apiUrl}</a>
               </td>
               <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
-                <button onClick={() => handleAddSubscription(entity.id)}>Upsert</button>
+                <button onClick={() => handleAddSubscription(entity.id)}>Subscribe</button>
               </td>
             </tr>
           ))}

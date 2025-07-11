@@ -14,18 +14,7 @@ export const PageLayout = (props) => {
             {props.children}
             <br />
             <AuthenticatedTemplate>
-                <footer>
-                    <center>
-                        <a
-                            href="https://github.com/efalabrini/ThresholdAlerts-client"
-                            rel="noopener noreferrer"
-                            target="_blank"
-                        >
-                            {' '}
-                            Check it out on GitHub!
-                        </a>
-                    </center>
-                </footer>
+                
             </AuthenticatedTemplate>
         </>
     );
