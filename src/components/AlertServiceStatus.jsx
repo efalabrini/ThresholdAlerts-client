@@ -6,27 +6,49 @@ const AlertServiceStatus = () => {
   const [period, setPeriod] = useState(null); // For `periodInMinutes`
   const [startTime, setstartTime] = useState(null);
 
-  useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const apiUrl = import.meta.env.VITE_API_URL  + 'api/ConfigInfo/alertservice/status';
-        const response = await fetch(apiUrl, {
-          headers: { accept: 'text/plain' },
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setStatus(data.isRunning);
-        setPeriod(data.periodInMinutes);
-        setstartTime(data.startTime);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
+  const apiBase = import.meta.env.VITE_API_URL;
 
+  const fetchStatus = async () => {
+    try {
+      const apiUrl = apiBase + 'api/ConfigInfo/alertservice/status';
+      const response = await fetch(apiUrl, {
+        headers: { accept: 'text/plain' },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setStatus(data.isRunning);
+      setPeriod(data.periodInMinutes);
+      setstartTime(data.startTime);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  useEffect(() => {
     fetchStatus();
   }, []);
+
+  const handleStartService = async () => {
+    try {
+      const keepAliveUrl = apiBase + 'api/ScheduleKeepAliveWork?periodInMinutes=2';
+      const scheduleUrl = apiBase + 'api/ScheduleWork?periodInMinutes=15';
+      const opts = { method: 'POST', headers: { accept: '*/*' } };
+
+      const [r1, r2] = await Promise.all([fetch(keepAliveUrl, opts), fetch(scheduleUrl, opts)]);
+      if (!r1.ok || !r2.ok) {
+        const statuses = `ScheduleKeepAliveWork: ${r1.status}, ScheduleWork: ${r2.status}`;
+        throw new Error(`Start service failed: ${statuses}`);
+      }
+
+      // refresh status after scheduling
+      await fetchStatus();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -40,7 +62,16 @@ const AlertServiceStatus = () => {
     color: status ? 'green' : 'red',
     fontSize: '12px',
     textAlign: 'left',
-    paddingLeft: '10px'
+    paddingLeft: '10px',
+    display: 'flex',
+    alignItems: 'center',
+  };
+
+  const buttonStyle = {
+    marginLeft: '8px',
+    padding: '4px 8px',
+    fontSize: '12px',
+    cursor: 'pointer',
   };
 
   function formatReadAtDate(readAt) {
@@ -55,7 +86,19 @@ const AlertServiceStatus = () => {
           }).format(new Date(readAt))
         : '';
   }
-  return <div style={textStyle}>{status ? `Alert Service running every ${period} minutes (Started at ${formatReadAtDate(startTime)})` : 'Alert Service stopped'}</div>;
+
+  return (
+    <div style={textStyle}>
+      {status ? (
+        `Alert Service running every ${period} minutes (Started at ${formatReadAtDate(startTime)})`
+      ) : (
+        <>
+          <span>Alert Service stopped</span>
+          <button style={buttonStyle} onClick={handleStartService}>Start Service</button>
+        </>
+      )}
+    </div>
+  );
 };
 
 export default AlertServiceStatus;
