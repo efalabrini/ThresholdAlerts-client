@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { loginRequest } from "../authConfig";
+import { useMsal } from "@azure/msal-react";
 
 const AlertServiceStatus = () => {
   const [status, setStatus] = useState(null); // `null` for initial loading state
   const [error, setError] = useState(null);
   const [period, setPeriod] = useState(null); // For `periodInMinutes`
   const [startTime, setstartTime] = useState(null);
+  const { instance } = useMsal();
 
   const apiBase = import.meta.env.VITE_API_URL;
 
@@ -33,9 +36,26 @@ const AlertServiceStatus = () => {
 
   const handleStartService = async () => {
     try {
+      const account = instance.getActiveAccount();
+      if (!account) {
+        throw Error("No active account! Verify a user has been signed in and setActiveAccount has been called.");
+      }
+
+      const response = await instance.acquireTokenSilent({
+        ...loginRequest,
+        account: account
+      });
+      const accessToken = response.accessToken;
+
       const keepAliveUrl = apiBase + 'api/ScheduleKeepAliveWork?periodInMinutes=2';
       const scheduleUrl = apiBase + 'api/ScheduleWork?periodInMinutes=15';
-      const opts = { method: 'POST', headers: { accept: '*/*' } };
+      const opts = {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-type': 'application/json'
+        }
+      };
 
       const [r1, r2] = await Promise.all([fetch(keepAliveUrl, opts), fetch(scheduleUrl, opts)]);
       if (!r1.ok || !r2.ok) {
