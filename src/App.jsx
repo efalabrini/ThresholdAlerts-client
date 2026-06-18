@@ -85,7 +85,7 @@ const App = ({ instance }) => {
             <AlertServiceStatus />
             <MeasurementList />
             <Readings />
-            <h6 style={{ textAlign: 'center', marginTop: '1em' }}>
+            <h6 className="auth-note">
                 Please sign-in to see your subscriptions.
             </h6>
           </UnauthenticatedTemplate>

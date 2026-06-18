@@ -11,7 +11,7 @@ export const PageLayout = (props) => {
     return (
         <>
             <NavigationBar />
-            {props.children}
+            <main className="pageContainer">{props.children}</main>
             <br />
             <AuthenticatedTemplate>
                 

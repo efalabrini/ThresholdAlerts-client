@@ -58,10 +58,6 @@ const MeasurementList = ({ onSubscriptionAdded }) => {
     setModalOpen(true);
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
   const handleSelectionChange = (e) => {
     setSelectedMeasurementId(e.target.value);
   };
@@ -123,78 +119,50 @@ const MeasurementList = ({ onSubscriptionAdded }) => {
   };
 
   return (
-    <div>
-      <h2>Measurements</h2>
-      <div
-        style={{
-          display: 'grid',
-          gap: '0.75rem',
-          marginBottom: '1rem',
-        }}
-      >
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr auto',
-            gap: '0.75rem',
-            alignItems: 'end',
-          }}
-        >
-          <div style={{ display: 'grid', gap: '0.25rem' }}>
-            <label htmlFor="measurement-select">Select measurement</label>
-            <select
-              id="measurement-select"
-              value={selectedMeasurementId}
-              onChange={handleSelectionChange}
-              style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
-            >
-              <option value="">-- Select a measurement --</option>
-              {data.map((entity) => (
-                <option key={entity.id} value={`${entity.id}`}>
-                  {entity.name} {entity.unit ? `(${entity.unit})` : ''}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <button
-            onClick={() => handleAddSubscription(selectedMeasurementId)}
-            disabled={!selectedMeasurementId}
-            style={{ padding: '10px 18px', height: '40px' }}
+    <div className="measurement-panel">
+      <h2 className="measurement-header">Measurements</h2>
+      <div className="field-row">
+        <div className="field-group">
+          <label className="cozy-label" htmlFor="measurement-select">Select measurement</label>
+          <select
+            id="measurement-select"
+            value={selectedMeasurementId}
+            onChange={handleSelectionChange}
+            className="cozy-select"
           >
-            Subscribe
-          </button>
+            <option value="">-- Select a measurement --</option>
+            {data.map((entity) => (
+              <option key={entity.id} value={`${entity.id}`}>
+                {entity.name} {entity.unit ? `(${entity.unit})` : ''}
+              </option>
+            ))}
+          </select>
         </div>
+
+        <button
+          onClick={() => handleAddSubscription(selectedMeasurementId)}
+          disabled={!selectedMeasurementId}
+          className="cozy-button"
+        >
+          Subscribe
+        </button>
       </div>
 
       {selectedMeasurement && (
-        <div style={{ marginTop: '1rem', padding: '1rem', border: '1px solid #ddd', borderRadius: '8px' }}>
+        <div className="selected-card">
           <strong>Selected measurement:</strong>
-          <p style={{ margin: '0.25rem 0' }}>{selectedMeasurement.name} {selectedMeasurement.unit ? `(${selectedMeasurement.unit})` : ''}</p>
-          <p style={{ margin: '0.25rem 0' }}>
+          <p>{selectedMeasurement.name} {selectedMeasurement.unit ? `(${selectedMeasurement.unit})` : ''}</p>
+          <p>
             <a href={selectedMeasurement.apiUrl} target="_blank" rel="noopener noreferrer">{selectedMeasurement.apiUrl}</a>
           </p>
         </div>
       )}
 
       {isModalOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            padding: '20px',
-            backgroundColor: 'white',
-            border: '1px solid #ddd',
-            borderRadius: '8px',
-            zIndex: 1000,
-            width: '320px',
-          }}
-        >
+        <div className="cozy-modal">
           <h3>Subscribe to measurement</h3>
           {selectedMeasurement && (
-            <div style={{ marginBottom: '1rem' }}>
+            <div className="selected-card" style={{ marginBottom: '1rem' }}>
               <strong>{selectedMeasurement.name}</strong>
               <div>{selectedMeasurement.unit}</div>
               <div>
@@ -204,31 +172,33 @@ const MeasurementList = ({ onSubscriptionAdded }) => {
               </div>
             </div>
           )}
-          <label style={{ display: 'block', marginBottom: '0.75rem' }}>
+          <label className="cozy-label" htmlFor="lowerThreshold">
             Lower Threshold:
-            <input
-              type="number"
-              name="lowerThreshold"
-              value={thresholds.lowerThreshold}
-              onChange={handleInputChange}
-              style={{ margin: '8px 0 0', display: 'block', width: '100%' }}
-            />
           </label>
-          <label style={{ display: 'block', marginBottom: '1rem' }}>
+          <input
+            id="lowerThreshold"
+            className="cozy-input"
+            type="number"
+            name="lowerThreshold"
+            value={thresholds.lowerThreshold}
+            onChange={handleInputChange}
+          />
+          <label className="cozy-label" htmlFor="upperThreshold">
             Upper Threshold:
-            <input
-              type="number"
-              name="upperThreshold"
-              value={thresholds.upperThreshold}
-              onChange={handleInputChange}
-              style={{ margin: '8px 0 0', display: 'block', width: '100%' }}
-            />
           </label>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-            <button onClick={handleSubmit} style={{ padding: '8px 16px' }}>
+          <input
+            id="upperThreshold"
+            className="cozy-input"
+            type="number"
+            name="upperThreshold"
+            value={thresholds.upperThreshold}
+            onChange={handleInputChange}
+          />
+          <div className="cozy-modal-actions">
+            <button onClick={handleSubmit} className="cozy-button">
               Submit
             </button>
-            <button onClick={handleCloseModal} style={{ padding: '8px 16px' }}>
+            <button onClick={handleCloseModal} className="cozy-button">
               Cancel
             </button>
           </div>
@@ -236,18 +206,7 @@ const MeasurementList = ({ onSubscriptionAdded }) => {
       )}
 
       {isModalOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 999,
-          }}
-          onClick={handleCloseModal}
-        />
+        <div className="cozy-modal-backdrop" onClick={handleCloseModal} />
       )}
 
     </div>

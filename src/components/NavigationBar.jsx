@@ -20,20 +20,22 @@ export const NavigationBar = () => {
      */
     return (
         <>
-            <Navbar bg="primary" variant="dark" className="navbarStyle">
+            <Navbar variant="dark" className="navbarStyle">
                 <a className="navbar-brand" href="/">
                     ThresholdAlert
                 </a>
                 <AuthenticatedTemplate>
                     <div className="collapse navbar-collapse justify-content-end">
-                        <Button variant="warning" onClick={handleLogoutRedirect}>
+                        <Button className="cozy-button" onClick={handleLogoutRedirect}>
                             Sign out
                         </Button>
                     </div>
                 </AuthenticatedTemplate>
                 <UnauthenticatedTemplate>
                     <div className="collapse navbar-collapse justify-content-end">
-                        <Button onClick={handleLoginRedirect}>Sign in</Button>
+                        <Button className="cozy-button" onClick={handleLoginRedirect}>
+                            Sign in
+                        </Button>
                     </div>
                 </UnauthenticatedTemplate>
             </Navbar>

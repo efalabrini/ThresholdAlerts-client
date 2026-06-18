@@ -94,37 +94,39 @@ const MySubscriptions = () => {
     };
   
     return (
-    <div>
-      <h2>My Subscriptions</h2>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Measurement</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Unit</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Lower Threshold</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Upper Threshold</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, index) => (
-            <tr key={index}>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.measurement}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.measurementUnit}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{new Intl.NumberFormat('en-US').format(item.lowerThreshold)}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{new Intl.NumberFormat('en-US').format(item.upperThreshold)}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
-                <button
-                  onClick={() => handleDelete(item.measurementId)}
-                  style={{ padding: '5px 10px', color: 'white', backgroundColor: 'red', border: 'none', cursor: 'pointer' }}
-                >
-                  Delete
-                </button>
-            </td>
+    <div className="measurement-panel">
+      <h2 className="measurement-header">My Subscriptions</h2>
+      <div className="table-wrapper">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Measurement</th>
+              <th>Unit</th>
+              <th>Lower Threshold</th>
+              <th>Upper Threshold</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map((item, index) => (
+              <tr key={index}>
+                <td data-label="Measurement">{item.measurement}</td>
+                <td data-label="Unit">{item.measurementUnit}</td>
+                <td data-label="Lower Threshold">{new Intl.NumberFormat('en-US').format(item.lowerThreshold)}</td>
+                <td data-label="Upper Threshold">{new Intl.NumberFormat('en-US').format(item.upperThreshold)}</td>
+                <td data-label="Actions" className="cell-center">
+                  <button
+                    onClick={() => handleDelete(item.measurementId)}
+                    className="cozy-button cozy-delete"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
