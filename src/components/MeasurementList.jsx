@@ -10,11 +10,14 @@ const MeasurementList = ({ onSubscriptionAdded }) => {
   const apiUrl = import.meta.env.VITE_API_URL  + 'api/Measurement';
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentId, setCurrentId] = useState(null);
+  const [selectedMeasurementId, setSelectedMeasurementId] = useState('');
   const [thresholds, setThresholds] = useState({
     lowerThreshold: '',
     upperThreshold: '',
   });
   const { instance } = useMsal();
+
+  const selectedMeasurement = data.find((entity) => `${entity.id}` === selectedMeasurementId);
 
   console.log(apiUrl);
 
@@ -46,8 +49,21 @@ const MeasurementList = ({ onSubscriptionAdded }) => {
   }
 
   const handleAddSubscription = (id) => {
+    if (!id) {
+      alert('Please select a measurement before subscribing.');
+      return;
+    }
+
     setCurrentId(id);
     setModalOpen(true);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSelectionChange = (e) => {
+    setSelectedMeasurementId(e.target.value);
   };
 
   const handleCloseModal = () => {
@@ -109,30 +125,57 @@ const MeasurementList = ({ onSubscriptionAdded }) => {
   return (
     <div>
       <h2>Measurements</h2>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Name</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Unit</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>API URL</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Subscription</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((entity) => (
-            <tr key={entity.id}>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{entity.name}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{entity.unit}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                <a href={entity.apiUrl} target="_blank" rel="noopener noreferrer">{entity.apiUrl}</a>
-              </td>
-              <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
-                <button onClick={() => handleAddSubscription(entity.id)}>Subscribe</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div
+        style={{
+          display: 'grid',
+          gap: '0.75rem',
+          marginBottom: '1rem',
+        }}
+      >
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr auto',
+            gap: '0.75rem',
+            alignItems: 'end',
+          }}
+        >
+          <div style={{ display: 'grid', gap: '0.25rem' }}>
+            <label htmlFor="measurement-select">Select measurement</label>
+            <select
+              id="measurement-select"
+              value={selectedMeasurementId}
+              onChange={handleSelectionChange}
+              style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+            >
+              <option value="">-- Select a measurement --</option>
+              {data.map((entity) => (
+                <option key={entity.id} value={`${entity.id}`}>
+                  {entity.name} {entity.unit ? `(${entity.unit})` : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button
+            onClick={() => handleAddSubscription(selectedMeasurementId)}
+            disabled={!selectedMeasurementId}
+            style={{ padding: '10px 18px', height: '40px' }}
+          >
+            Subscribe
+          </button>
+        </div>
+      </div>
+
+      {selectedMeasurement && (
+        <div style={{ marginTop: '1rem', padding: '1rem', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <strong>Selected measurement:</strong>
+          <p style={{ margin: '0.25rem 0' }}>{selectedMeasurement.name} {selectedMeasurement.unit ? `(${selectedMeasurement.unit})` : ''}</p>
+          <p style={{ margin: '0.25rem 0' }}>
+            <a href={selectedMeasurement.apiUrl} target="_blank" rel="noopener noreferrer">{selectedMeasurement.apiUrl}</a>
+          </p>
+        </div>
+      )}
 
       {isModalOpen && (
         <div
@@ -146,33 +189,49 @@ const MeasurementList = ({ onSubscriptionAdded }) => {
             border: '1px solid #ddd',
             borderRadius: '8px',
             zIndex: 1000,
+            width: '320px',
           }}
         >
-          <h3>Set Thresholds</h3>
-          <label>
+          <h3>Subscribe to measurement</h3>
+          {selectedMeasurement && (
+            <div style={{ marginBottom: '1rem' }}>
+              <strong>{selectedMeasurement.name}</strong>
+              <div>{selectedMeasurement.unit}</div>
+              <div>
+                <a href={selectedMeasurement.apiUrl} target="_blank" rel="noopener noreferrer">
+                  {selectedMeasurement.apiUrl}
+                </a>
+              </div>
+            </div>
+          )}
+          <label style={{ display: 'block', marginBottom: '0.75rem' }}>
             Lower Threshold:
             <input
               type="number"
               name="lowerThreshold"
               value={thresholds.lowerThreshold}
               onChange={handleInputChange}
-              style={{ margin: '10px 0', display: 'block', width: '100%' }}
+              style={{ margin: '8px 0 0', display: 'block', width: '100%' }}
             />
           </label>
-          <label>
+          <label style={{ display: 'block', marginBottom: '1rem' }}>
             Upper Threshold:
             <input
               type="number"
               name="upperThreshold"
               value={thresholds.upperThreshold}
               onChange={handleInputChange}
-              style={{ margin: '10px 0', display: 'block', width: '100%' }}
+              style={{ margin: '8px 0 0', display: 'block', width: '100%' }}
             />
           </label>
-          <button onClick={handleSubmit} style={{ marginRight: '10px' }}>
-            Submit
-          </button>
-          <button onClick={handleCloseModal}>Cancel</button>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+            <button onClick={handleSubmit} style={{ padding: '8px 16px' }}>
+              Submit
+            </button>
+            <button onClick={handleCloseModal} style={{ padding: '8px 16px' }}>
+              Cancel
+            </button>
+          </div>
         </div>
       )}
 
